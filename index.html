@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagina de logare</title>
+    <link rel='stylesheet' href='/css/fontawesome/all.css'>
+    <link rel='stylesheet' href='/css/fontawesome/fontawesome.css'>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    >
+    <link rel="stylesheet" href="/css/toast.css">
+    <link rel="stylesheet" href="/css/login.css">
+    
+    
+</head>
+<body>
+    <ul class="notifications"></ul>
+<div class="row">
+	<div class="header">
+		<!-- <img src="/logo.png" alt="Logo" class="header__logo"> -->
+		<h1 class="header__title">Administrația Natională a Penitenciarelor</h1>
+	</div>
+	<div class="screen">
+		<div class="screen__content">
+			<form class="login" id="login">
+				<div class="login__field">
+					                    <img class="login__icon" src="/img/login.svg" alt="login__icon">
+					<input type="text" id="username" name="username" class="login__input" placeholder="Nume utilizator">
+				</div>
+				<div class="login__field">
+                    <img class="login__icon" src="/img/password.svg" alt="login__icon">
+                    
+					
+					<input type="password" id="password" name="password" class="login__input" placeholder="Parola">
+				</div>
+				<button type="submit" class="button btn login__submit">
+					<span class=" btn button__text" createToast(warning)>Conectați-vă</span>
+					<img class="chevron-right" src="/img/chevron-right.svg" alt="login__icon" >
+				</button>
+			</form>
+            <!-- <div class="error-message" id="error-message"></div> -->
+			<div class="anp-logo">
+				<img src="/img/logo.png" alt="Logo" class="header__logo">
+			</div>
+		</div>
+		<div class="screen__background">
+			<span class="screen__background__shape screen__background__shape4"></span>
+			<span class="screen__background__shape screen__background__shape3"></span>
+			<span class="screen__background__shape screen__background__shape2"></span>
+			<span class="screen__background__shape screen__background__shape1"></span>
+		</div>
+	</div>
+</div>
+
+
+<!--  -->
+  <script>const form = document.getElementById('login');
+    const errorMessage = document.getElementById('error-message');
+    
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+    
+      const username = form.username.value.trim();
+      const password = form.password.value.trim();
+    
+      try {
+          // Показать индикатор загрузки
+          toggleLoading(true);
+    
+          const response = await fetch('https://10.111.111.165:32001/api/Login', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ username, password }),
+          });
+    
+          toggleLoading(false); // Скрыть индикатор загрузки
+    
+          if (response.ok) {
+              const data = await response.json();
+              sessionStorage.setItem('token', data.token);
+              createToast('success', 'Ati intrat cu succes');
+              window.location.href = '/dashboard.html';
+          } else {
+            //   showErrorAlert('Acreditări nevalide sau eroare de server');
+            createToast('error', 'Login sau parola gresita');
+            
+
+          }
+      } catch (error) {
+          toggleLoading(false); // Скрыть индикатор загрузки при ошибке
+          createToast('warning','Nu se poate conecta la server');
+      }
+    });
+    // Функция для показа ошибок
+
+
+// Функция для отображения загрузки
+function toggleLoading(isLoading) {
+  const submitButton = form.querySelector('button[type="submit"]');
+  submitButton.disabled = isLoading;
+  submitButton.textContent = isLoading ? 'Încărcare...' : 'Conectați-vă';
+}
+</script>
+    <!-- <script src="/js/script.js" defer></script> -->
+     <script src="/js/toast.js"></script>
+</body>
+
+<footer><p>
+    Copyright ©
+    <a href="https://anp.gov.md/" target="_blank">DTISC al ANP</a>
+    <span>2024</span>
+  </p></footer>
+
+</html>
